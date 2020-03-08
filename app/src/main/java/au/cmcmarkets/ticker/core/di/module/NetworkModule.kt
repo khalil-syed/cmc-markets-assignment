@@ -15,8 +15,7 @@ import javax.inject.Singleton
 class NetworkModule {
 
     companion object {
-        //TODO("Update this to the base URL")
-        private const val API_BASE_URL = ""
+        private const val API_BASE_URL = "https://blockchain.info/"
     }
 
     private val httpLoggingInterceptor: HttpLoggingInterceptor by lazy {

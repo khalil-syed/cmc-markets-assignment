@@ -6,5 +6,7 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="black">#000000</color>
+    <color name="orange">#F6AA3C</color>
+    <color name="neon_blue">#6DEDFF</color>
 
 </resources>
