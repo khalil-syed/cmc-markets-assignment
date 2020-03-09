@@ -16,11 +16,14 @@ import javax.inject.Inject
 import kotlin.concurrent.timerTask
 
 
-class OrderTicketViewModel @Inject constructor(private val bitcoinApi: BitcoinApi) : ViewModel() {
+class OrderTicketViewModel @Inject constructor() : ViewModel() {
 
     companion object {
         const val POLLING_INTERVAL_MILLIS: Long = 15000
     }
+
+    @Inject
+    lateinit var bitcoinApi: BitcoinApi
 
     val sellingPrice: MutableLiveData<PriceUpdate> by lazy {
         MutableLiveData<PriceUpdate>()
@@ -30,19 +33,19 @@ class OrderTicketViewModel @Inject constructor(private val bitcoinApi: BitcoinAp
         MutableLiveData<Boolean>()
     }
 
-    val amountValue: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
+    val amount: MutableLiveData<Double> by lazy {
+        MutableLiveData<Double>()
     }
 
-    val unitValue: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
+    val unit: MutableLiveData<Double> by lazy {
+        MutableLiveData<Double>()
     }
 
     val enableConfirmButton: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()
     }
 
-    val spreadValue: LiveData<String> = Transformations.map(sellingPrice){ (it.buy - it.sell).toString() }
+    val spread: LiveData<Double> = Transformations.map(sellingPrice){ it.buy - it.sell }
 
     fun startPolling() {
         pollingTimer.schedule(timerTask { fetchPrices() }, 0, POLLING_INTERVAL_MILLIS)
@@ -53,23 +56,20 @@ class OrderTicketViewModel @Inject constructor(private val bitcoinApi: BitcoinAp
     }
 
     fun onAmountEnteredByUser() {
-        amountValue.value?.let {
+        amount.value?.let {
             val buy = sellingPrice.value?.let { it.buy } ?: return
-            val amount = it.toIntOrNull()
-
-            val units = amount?.let { (amount/buy).toString() } ?: ""
-            unitValue.value = units
-            enableConfirmButton.value = it.isValid() && units.isValid()
+            val units = it/buy
+            unit.value = units
+            enableConfirmButton.value = it > 0 && units > 0
         }
     }
 
     fun onUnitEnteredByUser() {
-        unitValue.value?.let {
+        unit.value?.let {
             val buy = sellingPrice.value?.let { it.buy } ?: return
-            val units = it.toIntOrNull()
-            val amount = units?.let { (units*buy).toString() } ?: ""
-            amountValue.value = amount
-            enableConfirmButton.value = it.isValid() && amount.isValid()
+            val amountValue = it*buy
+            amount.value = amountValue
+            enableConfirmButton.value = it > 0 && amountValue > 0
         }
     }
 

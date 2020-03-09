@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.InverseBindingAdapter
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import au.cmcmarkets.ticker.R
@@ -16,6 +19,30 @@ import kotlinx.android.synthetic.main.fragment_order_ticket.*
 import javax.inject.Inject
 
 class OrderTicketFragment : DaggerFragment() {
+
+    companion object {
+        @BindingAdapter("android:text")
+        @JvmStatic
+        fun setDouble(view: TextView, oldValue: Double, value: Double) {
+            if (oldValue == value) {
+                return
+            }
+            if (value.isNaN()) {
+                view.text = ""
+                return
+            }
+
+            view.text = value.toString()
+        }
+
+        @InverseBindingAdapter(attribute = "android:text")
+        @JvmStatic
+        fun getDouble(view: TextView): Double {
+            val num = view.text
+            if(num.isEmpty()) return 0.0;
+            return num.toString().toDouble()
+        }
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -43,16 +70,19 @@ class OrderTicketFragment : DaggerFragment() {
         }
         viewModel.sellingPrice.observe(viewLifecycleOwner, priceObserver)
 
-        val amountObserver = Observer<String> {
-            if (editTxtAmount.hasFocus()) { viewModel.onAmountEnteredByUser() }
+        val amountObserver = Observer<Double> {
+            if (editTxtAmount.hasFocus()) {
+                viewModel.onAmountEnteredByUser()
+            }
         }
-        viewModel.amountValue.observe(viewLifecycleOwner, amountObserver)
+        viewModel.amount.observe(viewLifecycleOwner, amountObserver)
 
-        val unitObserver = Observer<String> {
-            if (editTxtUnits.hasFocus()) { viewModel.onUnitEnteredByUser() }
+        val unitObserver = Observer<Double> {
+            if (editTxtUnits.hasFocus()) {
+                viewModel.onUnitEnteredByUser()
+            }
         }
-        viewModel.unitValue.observe(viewLifecycleOwner, unitObserver)
-
+        viewModel.unit.observe(viewLifecycleOwner, unitObserver)
     }
 
     private fun setSellPrice(sellingPrice: Double) {
