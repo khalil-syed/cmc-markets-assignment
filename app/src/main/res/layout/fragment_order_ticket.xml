@@ -1,46 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/black"
-    android:padding="10dp">
-    <TextView
-        android:id="@+id/txtTitleSell"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textSize="16sp"
-        android:textColor="@color/orange"
-        android:text="SELL"/>
-    <TextView
-        android:id="@+id/txtSellValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtTitleSell"
-        android:textSize="30sp"
-        android:textColor="#88ffffff"
-        android:text="SELL"/>
-    <TextView
-        android:id="@+id/txtTitleBuy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textSize="16sp"
-        android:textColor="@color/neon_blue"
-        android:text="BUY"/>
-    <TextView
-        android:id="@+id/txtBuyValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtTitleBuy"
-        android:textSize="30sp"
-        android:textColor="#88ffffff"
-        android:text="SELL"/>
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <variable
+            name="viewModel"
+            type="au.cmcmarkets.ticker.feature.orderticket.OrderTicketViewModel" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutParent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:padding="10dp">
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontalCenterGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutSell"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/horizontalCenterGuideline"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/txtTitleSell"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_sell"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/price_title_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txtSellValueWhole"
+                style="@style/PriceValueTextLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/value_placeholder"
+                android:enabled="@{viewModel.highlightValues}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtTitleSell" />
+            <TextView
+                android:id="@+id/txtSellValueFraction"
+                style="@style/PriceValueTextSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.highlightValues}"
+                app:layout_constraintStart_toEndOf="@id/txtSellValueWhole"
+                app:layout_constraintBaseline_toBaselineOf="@id/txtSellValueWhole" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutBuy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/horizontalCenterGuideline"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/txtTitleBuy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_buy"
+                android:textColor="@color/neon_blue"
+                android:textSize="@dimen/price_title_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txtBuyValueFraction"
+                style="@style/PriceValueTextSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="@{viewModel.highlightValues}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBaseline_toBaselineOf="@id/txtBuyValueWhole" />
+
+            <TextView
+                android:id="@+id/txtBuyValueWhole"
+                style="@style/PriceValueTextLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/value_placeholder"
+                android:enabled="@{viewModel.highlightValues}"
+                app:layout_constraintEnd_toStartOf="@id/txtBuyValueFraction"
+                app:layout_constraintTop_toBottomOf="@id/txtTitleBuy" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/txtSpread"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.spreadValue}"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/layoutSell"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.5" />
+
+        <TextView
+            android:id="@+id/txtUnitsLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/text_units"
+            style="@style/EditTextLabel"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="2dp"
+            app:layout_constraintTop_toBottomOf="@id/layoutSell"
+            app:layout_constraintEnd_toEndOf="@id/layoutSell"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/txtAmountLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/text_amount_title"
+            style="@style/EditTextLabel"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintTop_toBottomOf="@id/layoutBuy"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/layoutBuy" />
+
+        <EditText
+            android:id="@+id/editTxtUnits"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/EditText"
+            android:layout_marginTop="2dp"
+            android:text="@={viewModel.unitValue}"
+            app:layout_constraintStart_toStartOf="@id/txtUnitsLabel"
+            app:layout_constraintEnd_toEndOf="@id/txtUnitsLabel"
+            app:layout_constraintTop_toBottomOf="@id/txtUnitsLabel"/>
+        <EditText
+            android:id="@+id/editTxtAmount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/EditText"
+            android:layout_marginTop="2dp"
+            android:text="@={viewModel.amountValue}"
+            app:layout_constraintStart_toStartOf="@id/txtAmountLabel"
+            app:layout_constraintEnd_toEndOf="@id/txtAmountLabel"
+            app:layout_constraintTop_toBottomOf="@id/txtAmountLabel"/>
+        <Button
+            android:id="@+id/btnConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="@{viewModel.enableConfirmButton}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/text_confirm"
+            style="@style/Button"
+            android:alpha="@{viewModel.enableConfirmButton ? 1.0f:0.5f}"
+            android:layout_margin="2dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

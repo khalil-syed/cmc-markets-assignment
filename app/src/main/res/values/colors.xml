@@ -7,6 +7,9 @@
 
     <color name="black">#000000</color>
     <color name="orange">#F6AA3C</color>
+    <color name="button_blue">#428C9A</color>
     <color name="neon_blue">#6DEDFF</color>
+    <color name="neon_green">#4CA02F</color>
+    <color name="price_default_color">#88ffffff</color>
 
 </resources>
